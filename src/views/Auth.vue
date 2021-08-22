@@ -22,7 +22,7 @@
                                             prepend-icon="mdi-account-circle"
                                             :error-messages="errors"
                                             v-model="rut"
-                                            name="user[rutDirective]" 
+                                            @blur="formatRut($event.target.value)" 
                                             v-rutDirective:live
                                         />
                                     </ValidationProvider>
@@ -89,7 +89,7 @@
 </style>
 
 <script>
-    import {rutValidator, rutInputDirective } from "vue-dni";
+    import {rutValidator, rutInputDirective, rutFilter } from "vue-dni";
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
     import { required } from 'vee-validate/dist/rules';
     import Vue from 'vue';
@@ -123,6 +123,11 @@
         methods:{
             getValueShow(value){
                 this.showModal = value;
+            },
+            formatRut(val) {
+                if (rutValidator(val)) {
+                    this.rut = rutFilter(val);
+                }
             },
         }
     })

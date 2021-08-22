@@ -29,7 +29,7 @@
                                         label="Rut"
                                         required
                                         v-model="rut"
-                                        name="user[rutDirective]" 
+                                        @blur="formatRut($event.target.value)" 
                                         v-rutDirective:live
                                         :error-messages="errors"
                                     ></v-text-field>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-    import {rutValidator, rutInputDirective } from "vue-dni";
+    import {rutValidator, rutInputDirective, rutFilter } from "vue-dni";
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
     import { required } from 'vee-validate/dist/rules';
     import Vue from 'vue';
@@ -172,7 +172,12 @@
             // },
             PushInfo(){
                 console.log('Aquí va el envío de información');
-            }
+            },
+            formatRut(val) {
+                if (rutValidator(val)) {
+                    this.rut = rutFilter(val);
+                }
+            },
         }
     }
 </script>
