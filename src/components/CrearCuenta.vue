@@ -40,7 +40,8 @@
                             v-model="pass"
                             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
                             @click:append="showPassword = !showPassword"
-                            :type="showPassword ? 'text' : 'password'" 
+                            :type="showPassword ? 'text' : 'password'"
+                            name="primerPass"
                         ></v-text-field>
                     </ValidationProvider>
                     </v-col>
@@ -49,7 +50,10 @@
                     <v-col
                     cols="10"
                     >
-                    <ValidationProvider v-slot="{ errors }" rules="required|minMaxPass:4,30">
+                    <ValidationProvider 
+                        v-slot="{ errors }" 
+                        :rules="`required|minMaxPass:4,30|passDiferente:${pass}`"
+                    >
                         <v-text-field
                             label="Repita Contraseña"
                             required
@@ -115,6 +119,16 @@
         params:['min', 'max'],
         message: 'Debe ingresar una contraseña entre 4 y 30 caracteres'
     })
+
+    extend("passDiferente", {
+        params: ["primerPass"],
+        validate(value, {primerPass}) {
+
+            return value === primerPass;
+        },
+        message: 'Las contraseñas deben ser idénticas'
+
+    });
 
     export default {
         components:{   
