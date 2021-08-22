@@ -30,11 +30,13 @@
                                         rules="required"
                                     >
                                         <v-text-field
-                                            type="password"
                                             label="Contraseña"
                                             prepend-icon="mdi-lock"
                                             :error-messages="errors"
                                             v-model="pass"
+                                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                            @click:append="showPassword = !showPassword"
+                                            :type="showPassword ? 'text' : 'password'" 
                                         />
                                     </ValidationProvider>
                                 </v-form>
@@ -78,7 +80,7 @@
 
 <script>
 
-    import { rutFilter,rutValidator, rutInputDirective } from "vue-dni";
+    import {rutValidator, rutInputDirective } from "vue-dni";
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
     import { required } from 'vee-validate/dist/rules';
     import Vue from 'vue';
@@ -103,7 +105,8 @@
         },
         data: () => ({
             rut: '',
-            pass:''
+            pass:'',
+            showPassword:false
         })
     })
 </script>
