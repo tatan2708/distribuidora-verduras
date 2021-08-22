@@ -1,5 +1,8 @@
 <template>
-    <ValidationObserver ref="observer">
+    <ValidationObserver 
+        ref="observer"
+         v-slot="{ invalid }"
+    >
         <v-row justify="center">
         <v-dialog
             :value="showModal"
@@ -73,21 +76,22 @@
                         </v-row>
                     </v-form>
                 </v-container>
-                <small class="purple--text font-weight-bold">Todos los campos son obligatorios</small>
+                <small class="purple--text font-weight-bold">* Todos los campos son obligatorios</small>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                color="red darken-1"
-                class="white--text"
-                @click="sendModal"
+                    color="red darken-1"
+                    class="white--text"
+                    @click="sendModal"
                 >
                 Cerrar
                 </v-btn>
                 <v-btn
-                color="blue darken-1"
-                @click="sendModal"
-                class="white--text"
+                    color="blue darken-1"
+                    @click="PushInfo"
+                    class="white--text"
+                    :disabled="invalid"
                 >
                 Guardar
                 </v-btn>
@@ -158,6 +162,17 @@
                 this.$refs.form.reset();
                 this.$emit('verModal', false);
             },
+
+            // async submitCrearCuenta () {
+            //     const isValid = await this.$refs.observer.validate();
+            //     console.log('holaa', isValid);
+            //     if (!isValid) {
+            //         // ABORT!!
+            //     }
+            // },
+            PushInfo(){
+                console.log('Aquí va el envío de información');
+            }
         }
     }
 </script>
