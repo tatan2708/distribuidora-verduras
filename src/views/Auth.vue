@@ -16,15 +16,19 @@
                             <v-spacer></v-spacer>
                             <v-card-text>
                                 <v-form>
-                                    <ValidationProvider v-slot="{ errors }" rules="required">
+                                    <ValidationProvider v-slot="{ errors }" rules="required|rut">
                                         <v-text-field 
                                             label="Rut" 
                                             prepend-icon="mdi-account-circle"
                                             :error-messages="errors"
                                             v-model="rut"
+                                            name="user[rutDirective]" 
+                                            v-rutDirective:live
                                         />
                                     </ValidationProvider>
-                                    <ValidationProvider v-slot="{ errors }" rules="required">
+                                    <ValidationProvider v-slot="{ errors }" 
+                                        rules="required"
+                                    >
                                         <v-text-field
                                             type="password"
                                             label="Contraseña"
@@ -74,14 +78,24 @@
 
 <script>
 
-    import { rutFilter } from "vue-dni";
+    import { rutFilter,rutValidator, rutInputDirective } from "vue-dni";
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
     import { required } from 'vee-validate/dist/rules';
+    import Vue from 'vue';
+
+    Vue.directive('rutDirective', rutInputDirective);
 
     extend('required', {
         ...required,
         message: 'Este campo es obligatorio'
     });
+
+    extend("rut", {
+        computesRequired: true,
+        validate: value => !!rutValidator(value),
+        message: "Debes ingresar un rut válido"
+    });
+
     export default({
         components:{   
             ValidationProvider,
