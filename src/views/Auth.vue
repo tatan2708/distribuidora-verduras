@@ -1,43 +1,51 @@
 <template>
-    <div class="fondo-auth">
-        <v-row class="purple darken-4">
-            <v-col class="titulo-auth">
-                Gestor de la distribuidora y productora de verduras Beas    
-            </v-col>
-        </v-row>
-        <v-row>
-            <v-col class="card-auth">
-                <div>
-                    <v-card width="400" class="mx-auto pa-4">
-                        <v-card-title class="pb-0">
-                            <h1>Login</h1>
-                        </v-card-title>
-                        <v-spacer></v-spacer>
-                        <v-card-text>
-                            <v-form>
-                            <v-text-field 
-                                label="Rut" 
-                                prepend-icon="mdi-account-circle"
-                            />
-                            <v-text-field 
-                                :type="showPassword ? 'text' : 'password'" 
-                                label="Contraseña"
-                                prepend-icon="mdi-lock"
-                                :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                                @click:append="showPassword = !showPassword"
-                            />
-                            </v-form>
-                        </v-card-text>
-                        <v-divider></v-divider>
-                        <v-card-actions class="pt-3">
-                            <v-btn color="info">Acceder</v-btn>
-                            <v-btn color="success">Crear Cuenta</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </div>
-            </v-col>
-        </v-row>
-    </div>
+    <ValidationObserver ref="observer">
+        <div class="fondo-auth">
+            <v-row class="purple darken-4">
+                <v-col class="titulo-auth">
+                    Gestor de la distribuidora y productora de verduras Beas    
+                </v-col>
+            </v-row>
+            <v-row>
+                <v-col class="card-auth">
+                    <div>
+                        <v-card width="400" class="mx-auto pa-4">
+                            <v-card-title class="pb-0">
+                                <h1>Login</h1>
+                            </v-card-title>
+                            <v-spacer></v-spacer>
+                            <v-card-text>
+                                <v-form>
+                                    <ValidationProvider v-slot="{ errors }" rules="required">
+                                        <v-text-field 
+                                            label="Rut" 
+                                            prepend-icon="mdi-account-circle"
+                                            :error-messages="errors"
+                                            v-model="rut"
+                                        />
+                                    </ValidationProvider>
+                                    <ValidationProvider v-slot="{ errors }" rules="required">
+                                        <v-text-field
+                                            type="password"
+                                            label="Contraseña"
+                                            prepend-icon="mdi-lock"
+                                            :error-messages="errors"
+                                            v-model="pass"
+                                        />
+                                    </ValidationProvider>
+                                </v-form>
+                            </v-card-text>
+                            <v-divider></v-divider>
+                            <v-card-actions class="pt-3">
+                                <v-btn color="info">Acceder</v-btn>
+                                <v-btn color="success">Crear Cuenta</v-btn>
+                            </v-card-actions>
+                        </v-card>
+                    </div>
+                </v-col>
+            </v-row>
+        </div>
+    </ValidationObserver>
 </template>
 
 <style scoped>
@@ -63,3 +71,25 @@
         
     }
 </style>
+
+<script>
+
+    import { rutFilter } from "vue-dni";
+    import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
+    import { required } from 'vee-validate/dist/rules';
+
+    extend('required', {
+        ...required,
+        message: 'Este campo es obligatorio'
+    });
+    export default({
+        components:{   
+            ValidationProvider,
+            ValidationObserver,
+        },
+        data: () => ({
+            rut: '',
+            pass:''
+        })
+    })
+</script>
