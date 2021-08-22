@@ -1,5 +1,8 @@
 <template>
-    <ValidationObserver ref="observer">
+    <ValidationObserver 
+        ref="observer"
+         v-slot="{ invalid }"
+    >
         <v-row justify="center">
         <v-dialog
             :value="showModal"
@@ -8,80 +11,87 @@
         >
             <v-card>
             <v-card-title>
-                <span class="text-h5 font-weight-bold blue--text">Registro de Nuevos Usuarios</span>
+                <span class="text-h5 font-weight-bold purple--text">Registro de Nuevos Usuarios</span>
             </v-card-title>
             <v-card-text>
                 <v-container>
-                <v-row>
-                    <v-col
-                        cols="10"
+
+                    <v-form
+                        ref="form"
+                        lazy-validation
                     >
-                        <ValidationProvider v-slot="{ errors }" rules="required|rut">
-                            <v-text-field
-                                label="Rut"
-                                required
-                                v-model="rut"
-                                name="user[rutDirective]" 
-                                v-rutDirective:live
-                                :error-messages="errors"
-                            ></v-text-field>
-                        </ValidationProvider>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="10"
-                    >
-                    <ValidationProvider v-slot="{ errors }" rules="required|minMaxPass:4,30">
-                        <v-text-field
-                            label="Ingrese Contraseña"
-                            required
-                            :error-messages="errors"
-                            v-model="pass"
-                            :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                            @click:append="showPassword = !showPassword"
-                            :type="showPassword ? 'text' : 'password'"
-                            name="primerPass"
-                        ></v-text-field>
-                    </ValidationProvider>
-                    </v-col>
-                </v-row>
-                <v-row>
-                    <v-col
-                    cols="10"
-                    >
-                    <ValidationProvider 
-                        v-slot="{ errors }" 
-                        :rules="`required|minMaxPass:4,30|passDiferente:${pass}`"
-                    >
-                        <v-text-field
-                            label="Repita Contraseña"
-                            required
-                            :error-messages="errors"
-                            v-model="otherPass"
-                            :append-icon="showOtherPassword ? 'mdi-eye' : 'mdi-eye-off'"
-                            @click:append="showOtherPassword = !showOtherPassword"
-                            :type="showOtherPassword ? 'text' : 'password'"
-                        ></v-text-field>
-                    </ValidationProvider>
-                    </v-col>
-                </v-row>
+                        <v-row>
+                            <v-col
+                                cols="10"
+                            >
+                                <ValidationProvider v-slot="{ errors }" rules="required|rut">
+                                    <v-text-field
+                                        label="Rut"
+                                        required
+                                        v-model="rut"
+                                        name="user[rutDirective]" 
+                                        v-rutDirective:live
+                                        :error-messages="errors"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col
+                            cols="10"
+                            >
+                            <ValidationProvider v-slot="{ errors }" rules="required|minMaxPass:4,30">
+                                <v-text-field
+                                    label="Ingrese Contraseña"
+                                    required
+                                    :error-messages="errors"
+                                    v-model="pass"
+                                    :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                    @click:append="showPassword = !showPassword"
+                                    :type="showPassword ? 'text' : 'password'"
+                                    name="primerPass"
+                                ></v-text-field>
+                            </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col
+                            cols="10"
+                            >
+                            <ValidationProvider 
+                                v-slot="{ errors }" 
+                                :rules="`required|minMaxPass:4,30|passDiferente:${pass}`"
+                            >
+                                <v-text-field
+                                    label="Repita Contraseña"
+                                    required
+                                    :error-messages="errors"
+                                    v-model="otherPass"
+                                    :append-icon="showOtherPassword ? 'mdi-eye' : 'mdi-eye-off'"
+                                    @click:append="showOtherPassword = !showOtherPassword"
+                                    :type="showOtherPassword ? 'text' : 'password'"
+                                ></v-text-field>
+                            </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                    </v-form>
                 </v-container>
-                <small class="red--text font-weight-bold">Todos los campos son obligatorios</small>
+                <small class="purple--text font-weight-bold">* Todos los campos son obligatorios</small>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                color="red darken-1"
-                class="white--text"
-                @click="sendModal()"
+                    color="red darken-1"
+                    class="white--text"
+                    @click="sendModal"
                 >
                 Cerrar
                 </v-btn>
                 <v-btn
-                color="blue darken-1"
-                @click="sendModal()"
-                class="white--text"
+                    color="blue darken-1"
+                    @click="PushInfo"
+                    class="white--text"
+                    :disabled="invalid"
                 >
                 Guardar
                 </v-btn>
@@ -148,9 +158,20 @@
         }),
         methods:{
             sendModal(){
-                // this.showModal = false;
-                // const verModal = false;
+                this.$refs.observer.reset();
+                this.$refs.form.reset();
                 this.$emit('verModal', false);
+            },
+
+            // async submitCrearCuenta () {
+            //     const isValid = await this.$refs.observer.validate();
+            //     console.log('holaa', isValid);
+            //     if (!isValid) {
+            //         // ABORT!!
+            //     }
+            // },
+            PushInfo(){
+                console.log('Aquí va el envío de información');
             }
         }
     }
