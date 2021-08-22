@@ -44,9 +44,19 @@
                             <v-divider></v-divider>
                             <v-card-actions class="pt-3">
                                 <v-btn color="info">Acceder</v-btn>
-                                <v-btn color="success">Crear Cuenta</v-btn>
+                                <v-btn 
+                                    color="success"
+                                    @click="showModal = true"
+                                >
+                                    Crear Cuenta
+                                </v-btn>
                             </v-card-actions>
                         </v-card>
+
+                        <CrearCuenta
+                            :showModal="showModal"
+                            @verModal = "getValueShow"
+                        />
                     </div>
                 </v-col>
             </v-row>
@@ -84,6 +94,7 @@
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
     import { required } from 'vee-validate/dist/rules';
     import Vue from 'vue';
+    import CrearCuenta from '@/components/CrearCuenta.vue';
 
     Vue.directive('rutDirective', rutInputDirective);
 
@@ -102,11 +113,18 @@
         components:{   
             ValidationProvider,
             ValidationObserver,
+            CrearCuenta
         },
         data: () => ({
             rut: '',
             pass:'',
-            showPassword:false
-        })
+            showPassword:false,
+            showModal: false,
+        }),
+        methods:{
+            getValueShow(value){
+                this.showModal = value;
+            },
+        }
     })
 </script>

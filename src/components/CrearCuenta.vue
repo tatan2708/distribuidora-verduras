@@ -1,13 +1,13 @@
 <template>
   <v-row justify="center">
     <v-dialog
-      v-model="dialog"
+      :value="showModal"
       persistent
       max-width="600px"
     >
       <v-card>
         <v-card-title>
-          <span class="text-h5">User Profile</span>
+          <span class="text-h5">Registro de Nuevos Usuarios</span>
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -18,84 +18,53 @@
                 md="4"
               >
                 <v-text-field
-                  label="Legal first name*"
+                  label="Rut"
                   required
                 ></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col
                 cols="12"
                 sm="6"
                 md="4"
               >
                 <v-text-field
-                  label="Legal middle name"
-                  hint="example of helper text only on focus"
+                  label="Ingrese Contraseña"
+                  required
                 ></v-text-field>
               </v-col>
+            </v-row>
+            <v-row>
               <v-col
                 cols="12"
                 sm="6"
                 md="4"
               >
                 <v-text-field
-                  label="Legal last name*"
-                  hint="example of persistent helper text"
-                  persistent-hint
+                  label="Reingrese la Contraseña"
                   required
                 ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Email*"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col cols="12">
-                <v-text-field
-                  label="Password*"
-                  type="password"
-                  required
-                ></v-text-field>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-select
-                  :items="['0-17', '18-29', '30-54', '54+']"
-                  label="Age*"
-                  required
-                ></v-select>
-              </v-col>
-              <v-col
-                cols="12"
-                sm="6"
-              >
-                <v-autocomplete
-                  :items="['Skiing', 'Ice hockey', 'Soccer', 'Basketball', 'Hockey', 'Reading', 'Writing', 'Coding', 'Basejump']"
-                  label="Interests"
-                  multiple
-                ></v-autocomplete>
               </v-col>
             </v-row>
           </v-container>
-          <small>*indicates required field</small>
+          <small class="red--text">Todos los campos son obligatorios</small>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="blue darken-1"
             text
-            @click="dialog = false"
+            @click="sendModal()"
           >
-            Close
+            Cerrar
           </v-btn>
           <v-btn
             color="blue darken-1"
             text
-            @click="dialog = false"
+            @click="sendModal()"
           >
-            Save
+            Guardar
           </v-btn>
         </v-card-actions>
       </v-card>
@@ -105,8 +74,19 @@
 
 <script>
   export default {
+    name: 'CrearCuenta',
+    props : [
+        'showModal',
+    ],
     data: () => ({
       dialog: false,
     }),
+    methods:{
+        sendModal(){
+            // this.showModal = false;
+            // const verModal = false;
+            this.$emit('verModal', false);
+        }
+    }
   }
 </script>
