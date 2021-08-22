@@ -89,7 +89,6 @@
 </style>
 
 <script>
-
     import {rutValidator, rutInputDirective } from "vue-dni";
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
     import { required } from 'vee-validate/dist/rules';
@@ -106,7 +105,7 @@
     extend("rut", {
         computesRequired: true,
         validate: value => !!rutValidator(value),
-        message: "Debes ingresar un rut válido"
+        message: "Debe ingresar un rut válido"
     });
 
     export default({
