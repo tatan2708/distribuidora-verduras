@@ -21,8 +21,30 @@
                         lazy-validation
                     >
                         <v-row>
+                            <v-col cols="10">
+                                <ValidationProvider v-slot="{ errors }" rules="required">
+                                    <v-text-field
+                                        label="Nombres"
+                                        required
+                                        :error-messages="errors"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="10">
+                                <ValidationProvider v-slot="{ errors }" rules="required">
+                                    <v-text-field
+                                        label="Apellidos"
+                                        required
+                                        :error-messages="errors"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
                             <v-col
-                                cols="10"
+                                cols="5"
                             >
                                 <ValidationProvider v-slot="{ errors }" rules="required|rut">
                                     <v-text-field
@@ -32,6 +54,22 @@
                                         @blur="formatRut($event.target.value)" 
                                         v-rutDirective:live
                                         :error-messages="errors"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="5">
+                                <ValidationProvider v-slot="{ errors }" rules="required|lengthCelular">
+                                    <v-text-field
+                                        label="Teléfono celular"
+                                        v-model="celular"
+                                        required
+                                        prefix="56 9"
+                                        :error-messages="errors"
+                                        :disabled="isDisabled"
+                                        @keypress="inputNumber($event)"
+                                        maxlength = "8"
+                                        oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength)"
+
                                     ></v-text-field>
                                 </ValidationProvider>
                             </v-col>
@@ -140,6 +178,13 @@
 
     });
 
+    extend('lengthCelular', {
+        validate(value){
+            return value.length === 8;
+        },
+        message: `Debe tener 8 caracteres`
+    })
+
     export default {
         components:{   
             ValidationProvider,
@@ -157,6 +202,13 @@
             showOtherPassword:false,
         }),
         methods:{
+            inputNumber(evento) {
+                const permitidos = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                const tecleado = evento.key;
+                if (!permitidos.includes(tecleado)) {
+                    evento.preventDefault()
+                }
+            },
             sendModal(){
                 this.$refs.observer.reset();
                 this.$refs.form.reset();
