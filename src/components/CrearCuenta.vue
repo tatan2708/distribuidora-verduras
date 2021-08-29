@@ -24,9 +24,10 @@
                             <v-col cols="10">
                                 <ValidationProvider v-slot="{ errors }" rules="required">
                                     <v-text-field
-                                        label="Nombres"
+                                        label="(*) Nombres"
                                         required
                                         :error-messages="errors"
+                                        v-model="nombres"
                                     ></v-text-field>
                                 </ValidationProvider>
                             </v-col>
@@ -35,7 +36,8 @@
                             <v-col cols="10">
                                 <ValidationProvider v-slot="{ errors }" rules="required">
                                     <v-text-field
-                                        label="Apellidos"
+                                        label="(*) Apellidos"
+                                        v-model="apellidos"
                                         required
                                         :error-messages="errors"
                                     ></v-text-field>
@@ -48,7 +50,7 @@
                             >
                                 <ValidationProvider v-slot="{ errors }" rules="required|rut">
                                     <v-text-field
-                                        label="Rut"
+                                        label="(*) Rut"
                                         required
                                         v-model="rut"
                                         @blur="formatRut($event.target.value)" 
@@ -63,7 +65,7 @@
                                         label="Teléfono celular"
                                         v-model="celular"
                                         required
-                                        prefix="56 9"
+                                        prefix="(*) 56 9"
                                         :error-messages="errors"
                                         :disabled="isDisabled"
                                         @keypress="inputNumber($event)"
@@ -75,12 +77,24 @@
                             </v-col>
                         </v-row>
                         <v-row>
+                            <v-col cols="10">
+                                <ValidationProvider v-slot="{ errors }" rules="email">
+                                    <v-text-field
+                                        label="(*) E-mail"
+                                        v-model="email"
+                                        required
+                                        :error-messages="errors"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
                             <v-col
                             cols="10"
                             >
                             <ValidationProvider v-slot="{ errors }" rules="required|minMaxPass:4,30">
                                 <v-text-field
-                                    label="Ingrese Contraseña"
+                                    label="(*) Ingrese Contraseña"
                                     required
                                     :error-messages="errors"
                                     v-model="pass"
@@ -101,7 +115,7 @@
                                 :rules="`required|minMaxPass:4,30|passDiferente:${pass}`"
                             >
                                 <v-text-field
-                                    label="Repita Contraseña"
+                                    label="(*) Repita Contraseña"
                                     required
                                     :error-messages="errors"
                                     v-model="otherPass"
@@ -114,7 +128,7 @@
                         </v-row>
                     </v-form>
                 </v-container>
-                <small class="purple--text font-weight-bold">* Todos los campos son obligatorios</small>
+                <small class="purple--text font-weight-bold">(*) Campos obligatorios</small>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -143,10 +157,15 @@
 <script>
     import {rutValidator, rutInputDirective, rutFilter } from "vue-dni";
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
-    import { required } from 'vee-validate/dist/rules';
+    import { required, email } from 'vee-validate/dist/rules';
     import Vue from 'vue';
 
     Vue.directive('rutDirective', rutInputDirective);
+
+    extend('email', {
+    ...email,
+    message: 'Debe ingresar un e-mail válido',
+    });
 
     extend('required', {
         ...required,
@@ -183,7 +202,7 @@
             return value.length === 8;
         },
         message: `Debe tener 8 caracteres`
-    })
+    });
 
     export default {
         components:{   
@@ -200,6 +219,10 @@
             otherPass:'',
             showPassword:false,
             showOtherPassword:false,
+            apellidos:'',
+            nombres:'',
+            email:'',
+            celular:''
         }),
         methods:{
             inputNumber(evento) {
