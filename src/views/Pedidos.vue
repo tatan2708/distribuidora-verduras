@@ -116,26 +116,32 @@
                                         lazy-validation
                                     >
                                         <template v-if="numberItem > 0">
-                                            <template v-for="i in numberItem">
+                                            <template v-for="(i) in numberItem">
                                                 <v-row :key="i" v-if="numberItem > 0">
                                                         <v-col cols="5">
                                                             <ValidationProvider v-slot="{ errors }" rules="required">
                                                                 <v-select
-                                                                    :items="verduras2"
+                                                                    :items="verduras"
                                                                     :error-messages="errors"
                                                                     label="Verduras"
+                                                                    item-text="nombre"
+                                                                    item-value="id"
+                                                                    v-model="id"
                                                                 ></v-select>
                                                             </ValidationProvider>                                               
                                                         </v-col>
                                                         <v-col cols="5">
                                                             <ValidationProvider v-slot="{ errors }" rules="required">
                                                                 <v-text-field
+                                                                    :items="verduras"
                                                                     label="Cantidad"
                                                                     required
-                                                                    v-model="cantidad"
                                                                     :error-messages="errors"
                                                                     type="number"
-                                                                    :min=0
+                                                                    :min=1
+                                                                    item-text="nombre"
+                                                                    item-value="id"
+                                                                    v-model="cantidad"
                                                                 ></v-text-field>
                                                             </ValidationProvider>                                               
                                                         </v-col>
@@ -162,13 +168,23 @@
                                         Cerrar
                                     </v-btn>
                                 </v-col>
+                                <v-col class="text-center">
+                                    <v-btn
+                                        class="mx-2 text-center"
+                                        dark
+                                        color="blue"
+                                        @click="isModal=false"
+                                    >
+                                        Enviar
+                                    </v-btn>
+                                </v-col>
                                 <v-col class="text-right">
                                     <v-btn
                                         class="mx-2 text-center"
                                         fab
-                                        dark
                                         color="indigo"
-                                        @click="addItem()"
+                                        @click="addRow()"
+                                        :disabled="addDisabled || disabledBtn"
                                     >
                                         <v-icon dark>
                                             mdi-plus
@@ -200,11 +216,15 @@
             ValidationObserver,
         },
         data: () => ({
-            cantidad:0,
+            id:null,
+            cantidad:null,
+            listoId:false,
+            listoCantidad:false,
+            addDisabled: false,
+            itemAddSDynamic:[],
             numberItem: 0,
             addPedidos:[],
             isModal: false,
-            verduras2: ['Papas', 'Zanahoria', 'Betarraga', 'Cebollas'],
             verduras:[
                 {   
                     id: 1,
@@ -277,10 +297,38 @@
             ],
         }),
         methods:{
-            addItem(){
+            addRow(){
+                this.addDisabled = true;
                 this.numberItem += 1;
-                console.log('hola', this.numberItem );
-                // this.addPedidos.add()
+                const objectVerduras = {
+                    id: this.id,
+                    cantidad: this.cantidad
+                }
+                if(this.id != null){
+                    this.itemAddSDynamic.push(objectVerduras);
+                }
+            },
+        },
+        watch: {
+            id(val){
+                this.id = val;
+                if(this.id != null){
+                    this.listoId = true;
+                }
+            },
+            cantidad(val){
+                this.cantidad = val;
+                if(this.cantidad != null){ 
+                    this.addDisabled = false;
+                }
+            },
+        },
+        computed:{
+            disabledBtn(){
+                if(this.listoCantidad && this.listoId){
+                    return true;
+                }
+                return false;
             }
         }
     })
