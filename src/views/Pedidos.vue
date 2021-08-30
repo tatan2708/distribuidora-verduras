@@ -115,20 +115,67 @@
                                         ref="form"
                                         lazy-validation
                                     >
-                                        <v-row>
-                                        <v-text-field
-                                            label="Rut"
-                                            required
-                                            v-model="rut"
-                                            @blur="formatRut($event.target.value)" 
-                                            v-rutDirective:live
-                                            :error-messages="errors"
-                                        ></v-text-field>
-
+                                        <template v-if="numberItem > 0">
+                                            <template v-for="i in numberItem">
+                                                <v-row :key="i" v-if="numberItem > 0">
+                                                        <v-col cols="5">
+                                                            <ValidationProvider v-slot="{ errors }" rules="required">
+                                                                <v-select
+                                                                    :items="verduras2"
+                                                                    :error-messages="errors"
+                                                                    label="Verduras"
+                                                                ></v-select>
+                                                            </ValidationProvider>                                               
+                                                        </v-col>
+                                                        <v-col cols="5">
+                                                            <ValidationProvider v-slot="{ errors }" rules="required">
+                                                                <v-text-field
+                                                                    label="Cantidad"
+                                                                    required
+                                                                    v-model="cantidad"
+                                                                    :error-messages="errors"
+                                                                    type="number"
+                                                                    :min=0
+                                                                ></v-text-field>
+                                                            </ValidationProvider>                                               
+                                                        </v-col>
+                                                </v-row>
+                                            </template>
+                                        </template>
+                                        <v-row class="textDefault py-6 pb-0" v-else>
+                                            <div>
+                                                Ingrese un pedido
+                                            </div>
                                         </v-row>
                                     </v-form>
                                 </v-container>
                             </v-card-text>
+
+                            <v-card-actions>
+                                <v-col class="text-left">
+                                    <v-btn
+                                        class="mx-2 text-center"
+                                        dark
+                                        color="red"
+                                        @click="isModal=false"
+                                    >
+                                        Cerrar
+                                    </v-btn>
+                                </v-col>
+                                <v-col class="text-right">
+                                    <v-btn
+                                        class="mx-2 text-center"
+                                        fab
+                                        dark
+                                        color="indigo"
+                                        @click="addItem()"
+                                    >
+                                        <v-icon dark>
+                                            mdi-plus
+                                        </v-icon>
+                                    </v-btn>
+                                </v-col>
+                            </v-card-actions>
                         </v-card>
                     </v-dialog>
                 </v-row>
@@ -153,7 +200,29 @@
             ValidationObserver,
         },
         data: () => ({
+            cantidad:0,
+            numberItem: 0,
+            addPedidos:[],
             isModal: false,
+            verduras2: ['Papas', 'Zanahoria', 'Betarraga', 'Cebollas'],
+            verduras:[
+                {   
+                    id: 1,
+                    nombre: 'Papas'
+                },
+                {   
+                    id: 2,
+                    nombre: 'Zanahorias'
+                },
+                {   
+                    id: 3,
+                    nombre: 'Betarragas'
+                },
+                {   
+                    id: 4,
+                    nombre: 'Cebollas'
+                },
+            ],
             pedidos:[
                 {
                     producto:'papas',
@@ -207,10 +276,22 @@
                 },
             ],
         }),
+        methods:{
+            addItem(){
+                this.numberItem += 1;
+                console.log('hola', this.numberItem );
+                // this.addPedidos.add()
+            }
+        }
     })
 </script>
 
 <style scoped>
-
-
+    .textDefault{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+    }
 </style>
