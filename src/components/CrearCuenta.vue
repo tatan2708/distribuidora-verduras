@@ -21,16 +21,68 @@
                         lazy-validation
                     >
                         <v-row>
+                            <v-col cols="10">
+                                <ValidationProvider v-slot="{ errors }" rules="required">
+                                    <v-text-field
+                                        label="(*) Nombres"
+                                        required
+                                        :error-messages="errors"
+                                        v-model="nombres"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="10">
+                                <ValidationProvider v-slot="{ errors }" rules="required">
+                                    <v-text-field
+                                        label="(*) Apellidos"
+                                        v-model="apellidos"
+                                        required
+                                        :error-messages="errors"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
                             <v-col
-                                cols="10"
+                                cols="5"
                             >
                                 <ValidationProvider v-slot="{ errors }" rules="required|rut">
                                     <v-text-field
-                                        label="Rut"
+                                        label="(*) Rut"
                                         required
                                         v-model="rut"
                                         @blur="formatRut($event.target.value)" 
                                         v-rutDirective:live
+                                        :error-messages="errors"
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                            <v-col cols="5">
+                                <ValidationProvider v-slot="{ errors }" rules="required|lengthCelular">
+                                    <v-text-field
+                                        label="Teléfono celular"
+                                        v-model="celular"
+                                        required
+                                        prefix="(*) 56 9"
+                                        :error-messages="errors"
+                                        :disabled="isDisabled"
+                                        @keypress="inputNumber($event)"
+                                        maxlength = "8"
+                                        oninput="if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength)"
+
+                                    ></v-text-field>
+                                </ValidationProvider>
+                            </v-col>
+                        </v-row>
+                        <v-row>
+                            <v-col cols="10">
+                                <ValidationProvider v-slot="{ errors }" rules="email">
+                                    <v-text-field
+                                        label="(*) E-mail"
+                                        v-model="email"
+                                        required
                                         :error-messages="errors"
                                     ></v-text-field>
                                 </ValidationProvider>
@@ -42,7 +94,7 @@
                             >
                             <ValidationProvider v-slot="{ errors }" rules="required|minMaxPass:4,30">
                                 <v-text-field
-                                    label="Ingrese Contraseña"
+                                    label="(*) Ingrese Contraseña"
                                     required
                                     :error-messages="errors"
                                     v-model="pass"
@@ -63,7 +115,7 @@
                                 :rules="`required|minMaxPass:4,30|passDiferente:${pass}`"
                             >
                                 <v-text-field
-                                    label="Repita Contraseña"
+                                    label="(*) Repita Contraseña"
                                     required
                                     :error-messages="errors"
                                     v-model="otherPass"
@@ -76,7 +128,7 @@
                         </v-row>
                     </v-form>
                 </v-container>
-                <small class="purple--text font-weight-bold">* Todos los campos son obligatorios</small>
+                <small class="purple--text font-weight-bold">(*) Campos obligatorios</small>
             </v-card-text>
             <v-card-actions>
                 <v-spacer></v-spacer>
@@ -105,10 +157,15 @@
 <script>
     import {rutValidator, rutInputDirective, rutFilter } from "vue-dni";
     import { ValidationObserver, ValidationProvider,extend } from "vee-validate";
-    import { required } from 'vee-validate/dist/rules';
+    import { required, email } from 'vee-validate/dist/rules';
     import Vue from 'vue';
 
     Vue.directive('rutDirective', rutInputDirective);
+
+    extend('email', {
+    ...email,
+    message: 'Debe ingresar un e-mail válido',
+    });
 
     extend('required', {
         ...required,
@@ -140,6 +197,13 @@
 
     });
 
+    extend('lengthCelular', {
+        validate(value){
+            return value.length === 8;
+        },
+        message: `Debe tener 8 caracteres`
+    });
+
     export default {
         components:{   
             ValidationProvider,
@@ -155,8 +219,19 @@
             otherPass:'',
             showPassword:false,
             showOtherPassword:false,
+            apellidos:'',
+            nombres:'',
+            email:'',
+            celular:''
         }),
         methods:{
+            inputNumber(evento) {
+                const permitidos = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+                const tecleado = evento.key;
+                if (!permitidos.includes(tecleado)) {
+                    evento.preventDefault()
+                }
+            },
             sendModal(){
                 this.$refs.observer.reset();
                 this.$refs.form.reset();
